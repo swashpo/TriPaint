@@ -1,0 +1,120 @@
+//
+ArrayList<TriangleClass> triangles;
+//
+// ---------------------------------------------------------------
+//
+void setup() {
+  size(800, 600); // size of canvas
+  triangles = new ArrayList<TriangleClass>();  // Create an empty ArrayList
+  
+  int L = 50; // length of triangle side
+  double halfStep = L * Math.sqrt(3);
+  
+  // pointing right, first set
+  for (double x = 0; x < 800; x += halfStep) {
+    for (int y = 0; y < 600; y += L) {
+      triangles.add(new TriangleClass(x, y, x + halfStep / 2, y + L/2,
+      x, y + L)); 
+    }
+  }
+  
+  // pointing right, second set
+  for (double x = halfStep / 2; x < 800; x += halfStep) {
+    for (int y = L / 2 - L; y < 600; y += L ) {
+      triangles.add(new TriangleClass(x, y, x + halfStep / 2, y + L/2,
+      x, y + L));
+    }
+  }
+  
+  // pointing left, first set
+  for (double x = 0; x < 800; x += halfStep) {
+    for (int y = 0 - L; y < 600; y += L) {
+      triangles.add(new TriangleClass(x, y + L, x + halfStep / 2, y + L/2,
+      x + halfStep / 2, y + 3*L/2));
+    }
+  }
+  
+  // pointing left, second set
+  for (double x = halfStep / 2; x < 800; x += halfStep ) {
+    for (int y = 0; y < 600; y += L) {
+      triangles.add(new TriangleClass(x, y + L / 2, x + halfStep / 2, y, 
+      x + halfStep /2, y + L));
+    }
+  }
+  strokeWeight(1.5);
+} 
+
+void draw() {
+  background(0);
+  TriangleClass myCurrentTriangle;
+
+  for (int i = 0; i < triangles.size(); i++) {
+    // get object from ArrayList
+    myCurrentTriangle = triangles.get(i);
+    myCurrentTriangle.display();
+  } 
+} 
+
+void mouseClicked () {
+  TriangleClass myCurrentTriangle ;
+  for (int i=0; i < triangles.size(); i++) {
+    // get object from ArrayList
+    myCurrentTriangle = triangles.get(i);
+    myCurrentTriangle.mouseOver();
+  }
+}
+
+class TriangleClass {
+  double x1, y1, x2, y2, x3, y3;    // points
+  color fill; // fill color
+  color stroke; // stroke color
+  float mouseSensorX, mouseSensorY;// check point for dist to mouse
+
+  // constructor
+  TriangleClass( double tempX1, double tempY1,
+  double tempX2, double tempY2,
+  double tempX3, double tempY3) {
+    x1 = tempX1;
+    y1 = tempY1;
+    x2 = tempX2;
+    y2 = tempY2;
+    x3 = tempX3;
+    y3 = tempY3;   
+    stroke = color(227,227,227); // initial light border
+    fill = color(249, 249, 249); // initial empty fill
+    mouseSensorX = (float) (x1+x2+x3 )/ 3;
+    mouseSensorY = (float) (y1+y2+y3 )/ 3;
+  }  
+   
+  void mouseOver() {
+    if (dist(mouseX, mouseY, mouseSensorX, mouseSensorY) < 17) {
+      // alternates colors between three
+      if (fill == color(249, 249, 249)) {
+        stroke = color(251, 84, 84);
+        fill = color(251,84,84);
+      }
+      else if (fill == color(251,84,84)) {
+        stroke = color(84, 157, 251);
+        fill = color(84,157,251);
+      }
+      else if (fill == color(84,157,251)) {
+        stroke = color(204,204,84);
+        fill = color(204,204,84);
+      }
+      else {
+        stroke = color(227,227,227);
+        fill = color(249, 249, 249);
+      }
+        
+    }
+  } 
+  
+  void display() {
+   
+    // show triangle
+    stroke(stroke);
+    fill(fill);
+    triangle((float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3);
+  } 
+} 
+// =====================================================================
